@@ -19,6 +19,7 @@ from sistema import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('buscar_livro/', views.buscar_livro, name='buscar_livro'),
     path('cadastrar_livro/', views.cadastrar_livro, name='cadastrar_livro'),
     path('listar_livros/', views.listar_livros, name='listar_livros'),
     path('realizar_emprestimo/<int:livro_id>/<int:pessoa_id>/', views.realizar_emprestimo, name='realizar_emprestimo'),

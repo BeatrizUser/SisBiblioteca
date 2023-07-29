@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+import requests
 from .models import Livro, Pessoa, Emprestimo
 
 def cadastrar_livro(request):
@@ -45,3 +46,26 @@ def finalizar_emprestimo(request, emprestimo_id):
         livro.save()
 
     return redirect('pagina_de_sucesso.html')
+
+def buscar_livro(request):
+    search_query = request.GET.get('q', '')
+    if search_query:
+        url = f'https://www.googleapis.com/books/v1/volumes?q={search_query}'
+        response = requests.get(url)
+        data = response.json()
+
+        books = []
+        if 'items' in data:
+            for item in data['items']:
+                book = {
+                    'title': item['volumeInfo']['title'],
+                    'author': ', '.join(item['volumeInfo'].get('authors', ['Desconhecido'])),
+                    'category': ', '.join(item['volumeInfo'].get('categories', ['Desconhecido'])),
+                    'cover_url': item['volumeInfo']['imageLinks']['thumbnail'] if 'imageLinks' in item['volumeInfo'] else None,
+                }
+                books.append(book)
+    else:
+        books = []
+        search_query = ''
+
+    return render(request, 'buscar_livro.html', {'books': books, 'search_query': search_query})

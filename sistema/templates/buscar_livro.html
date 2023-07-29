@@ -1,0 +1,36 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container mx-auto py-8">
+        <h1 class="text-4xl font-bold mb-4">Buscar Livro no Google Books</h1>
+        <form method="get" action="{% url 'buscar_livro' %}" class="max-w-md mx-auto mb-8">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" name="q" value="{{ search_query }}" placeholder="Digite o nome do livro" aria-label="Pesquisar livro" aria-describedby="search-btn">
+                <button class="btn btn-outline-secondary" type="submit" id="search-btn">Buscar</button>
+            </div>
+        </form>
+
+        {% if books %}
+            <div class="row">
+                {% for book in books %}
+                    <div class="col-md-3 col-sm-4 mb-4" style="height: 300rem;">
+                        <div class="card">
+                            <img src="{% if book.cover_url %}{{ book.cover_url }}{% else %}{% static 'img/no_image_available.png' %}{% endif %}" class="card-img-top" alt="{{ book.title }}">
+                            <div class="card-body">
+                                <h5 class="card-title text-md">{{ book.title }}</h5>
+                                <p class="card-text text-sm pt-2">Autor: {{ book.author }}</p>
+                                <p class="card-text text-sm">Categoria: {{ book.category }}</p>
+                                <a href="#" class="btn btn-primary">Clonar</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            {% if search_query %}
+                <p>Nenhum resultado encontrado para "{{ search_query }}".</p>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

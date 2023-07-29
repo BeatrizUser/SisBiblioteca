@@ -1,5 +1,19 @@
 from django.db import models
 from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+class Autor(models.Model):
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
+
+class Editora(models.Model):
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
 
 class CategoriaLivro(models.Model):
     nome = models.CharField(max_length=100)
@@ -8,18 +22,36 @@ class CategoriaLivro(models.Model):
         return self.nome
 
 class Livro(models.Model):
+    STATUS_CHOICES = [
+        ('Disponível', 'Disponível'),
+        ('Emprestado', 'Emprestado'),
+    ]
     titulo = models.CharField(max_length=200)
-    autor = models.CharField(max_length=100)
-    editora = models.CharField(max_length=100)
+    autor = models.ForeignKey(Autor, on_delete=models.SET_NULL, null=True)
+    editora = models.ForeignKey(Editora, on_delete=models.SET_NULL, null=True)
     edicao = models.CharField(max_length=50)
     isbn = models.CharField(max_length=20)
     ano_publicacao = models.PositiveIntegerField()
     categoria = models.ForeignKey(CategoriaLivro, on_delete=models.SET_NULL, null=True)
     num_copias_disponiveis = models.PositiveIntegerField(default=1)
-    reservado = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Disponível')
 
     def __str__(self):
         return self.titulo
+    
+    def emprestimo_realizado(self):
+        if self.num_copias_disponiveis > 0:
+            self.num_copias_disponiveis -= 1
+            if self.num_copias_disponiveis == 0:
+                self.status = 'Emprestado'
+            self.save()
+    
+    def emprestimo_finalizado(self):
+        if self.num_copias_disponiveis >= 0:
+            self.num_copias_disponiveis += 1
+            if self.num_copias_disponiveis > 0:
+                self.status = 'Disponível'
+            self.save()
 
 class Pessoa(models.Model):
     nome = models.CharField(max_length=200)
@@ -39,7 +71,15 @@ class Emprestimo(models.Model):
     def __str__(self):
         return f"Empréstimo de '{self.livro}' para '{self.pessoa}'"
 
-    def save(self, *args, **kwargs):
-        if not self.data_devolucao_prevista:
-            self.data_devolucao_prevista = self.data_emprestimo + timezone.timedelta(days=15)
-        super().save(*args, **kwargs)
+@receiver(post_save, sender=Emprestimo)
+def update_livro_status(sender, instance, **kwargs):
+    livro = instance.livro
+    if instance.data_devolucao_efetiva is None:
+        # Empréstimo criado ou atualizado sem data de devolução efetiva, então ainda está em andamento
+        livro.status = 'Emprestado'
+        livro.num_copias_disponiveis -= 1
+    else:
+        # Empréstimo finalizado com data de devolução efetiva, então está disponível novamente
+        livro.status = 'Disponível'
+        livro.num_copias_disponiveis += 1
+    livro.save()
