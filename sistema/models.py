@@ -3,18 +3,6 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-class Autor(models.Model):
-    nome = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.nome
-
-class Editora(models.Model):
-    nome = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.nome
-
 class CategoriaLivro(models.Model):
     nome = models.CharField(max_length=100)
 
@@ -27,14 +15,15 @@ class Livro(models.Model):
         ('Emprestado', 'Emprestado'),
     ]
     titulo = models.CharField(max_length=200)
-    autor = models.ForeignKey(Autor, on_delete=models.SET_NULL, null=True)
-    editora = models.ForeignKey(Editora, on_delete=models.SET_NULL, null=True)
-    edicao = models.CharField(max_length=50)
+    autor = models.CharField(max_length=200)
+    editora = models.CharField(max_length=50, null=True, blank=True)
+    edicao = models.CharField(max_length=50, null=True, blank=True)
     isbn = models.CharField(max_length=20)
-    ano_publicacao = models.PositiveIntegerField()
-    categoria = models.ForeignKey(CategoriaLivro, on_delete=models.SET_NULL, null=True)
+    publicacao = models.CharField(max_length=20)
+    categoria = models.CharField(max_length=200)
     num_copias_disponiveis = models.PositiveIntegerField(default=1)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Disponível')
+    descricao = models.CharField(max_length=1000)
 
     def __str__(self):
         return self.titulo

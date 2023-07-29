@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.urls import reverse
 import requests
 from .models import Livro, Pessoa, Emprestimo
 
@@ -57,11 +58,23 @@ def buscar_livro(request):
         books = []
         if 'items' in data:
             for item in data['items']:
+                title = item['volumeInfo'].get('title', 'Desconhecido')
+                author = ', '.join(item['volumeInfo'].get('authors', ['Desconhecido']))
+                description = item['volumeInfo'].get('description', 'Descrição indisponível.')
+                publisher = item['volumeInfo'].get('publisher', 'Editora desconhecida.')
+                category = ', '.join(item['volumeInfo'].get('categories', ['Desconhecido']))
+                cover_url = item['volumeInfo']['imageLinks']['thumbnail'] if 'imageLinks' in item['volumeInfo'] and 'thumbnail' in item['volumeInfo']['imageLinks'] else None
+                publishedDate = item['volumeInfo'].get('publishedDate', '')
+                isbn = item['volumeInfo']['industryIdentifiers'][0].get('identifier', ['Não Possui'])
                 book = {
-                    'title': item['volumeInfo']['title'],
-                    'author': ', '.join(item['volumeInfo'].get('authors', ['Desconhecido'])),
-                    'category': ', '.join(item['volumeInfo'].get('categories', ['Desconhecido'])),
-                    'cover_url': item['volumeInfo']['imageLinks']['thumbnail'] if 'imageLinks' in item['volumeInfo'] else None,
+                    'title': title,
+                    'author': author,
+                    'description': description,
+                    'publisher': publisher,
+                    'publishedDate':publishedDate,
+                    'category': category,
+                    'cover_url': cover_url,
+                    'isbn':isbn,
                 }
                 books.append(book)
     else:

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import *
+from .models import CategoriaLivro, Livro, Pessoa, Emprestimo
 
 @admin.register(CategoriaLivro)
 class CategoriaLivroAdmin(admin.ModelAdmin):
@@ -29,11 +29,3 @@ class EmprestimoAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('livro', 'pessoa')
-
-@admin.register(Autor)
-class AutorAdmin(admin.ModelAdmin):
-    list_display = ('nome',)
-
-@admin.register(Editora)
-class EditoraAdmin(admin.ModelAdmin):
-    list_display = ('nome',)
