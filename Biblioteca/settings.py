@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['sistemabiblioteca.onrender.com']
 
-LOGIN_REDIRECT_URL = '/admin'
+LOGIN_REDIRECT_URL = '/'
 # Application definition
 
 INSTALLED_APPS = [
