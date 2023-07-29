@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Livros</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto py-8">
+        <h1 class="text-4xl font-bold mb-4">Lista de Livros</h1>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for livro in livros %}
+            <a href="/admin/sistema/livro/{{ livro.id }}/change/">
+                    <li class="bg-white shadow-md rounded p-4 text-center">
+                        <h2 class="text-xl font-bold mb-2">{{ livro.titulo }}</h2>
+                        <p class="text-lg text-gray-600">Autor:{{ livro.autor }}</p>
+                        <p class="text-lg text-gray-600">Editora:{{ livro.editora }}</p>
+                        <p class="text-sm text-gray-500 mt-2">Categoria: {{ livro.categoria }}</p>
+                        <p class="text-sm text-gray-500">Disponíveis: {{ livro.num_copias_disponiveis }}</p>
+                    </li>
+            </a>
+                {% endfor %}
+            </ul>
+        </div>
+</body>
+</html>

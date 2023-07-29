@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto py-8">
+        <h1 class="text-4xl font-bold mb-4">Status</h1>
+        <p class="text-lg">{{ mensagem }}</p>
+        <a href="{% url 'pagina_inicial' %}" class="inline-block mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded">Voltar à página inicial</a>
+    </div>
+</body>
+</html>
