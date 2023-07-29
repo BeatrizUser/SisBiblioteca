@@ -209,7 +209,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Caminho absoluto para a pasta onde os arquivos estáticos serão coletados durante o deploy
-STATIC_ROOT = '/home/bia/Desktop/Projetos/Coding/SisBiblioteca/static'  # Substitua pelo caminho correto em seu servidor
+STATIC_ROOT = '/home/bia/Desktop/Projetos/Coding/SisBiblioteca/static/'  # Substitua pelo caminho correto em seu servidor
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
