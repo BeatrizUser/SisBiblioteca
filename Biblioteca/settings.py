@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import mimetypes
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -204,6 +205,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
+mimetypes.add_type("text/css", ".css", True)
 
 # Caminho URL base para os arquivos estáticos
 STATIC_URL = '/static/'
